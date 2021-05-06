@@ -15,10 +15,10 @@ public class StringManipulator {
     }
 
     public Integer getIndexOrNull(String str, String sub){
-        if(str.indexOf(sub) == -1) {
+        if(str.indexOf(sub) == -1) {         //set this equal to -1 because we expect it not to be found, so we return null
     		return null;
     	}
-    	return str.indexOf(sub);
+    	return str.indexOf(sub);             //if it is found then we can return the index
     
     }
 
