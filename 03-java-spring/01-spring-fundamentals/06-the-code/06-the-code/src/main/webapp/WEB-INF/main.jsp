@@ -8,11 +8,9 @@
 <title>Code Page</title>
 </head>
 <body>
-	<c:if test="${error == true}">
-		<h3>The code was not correct</h3>
-	</c:if>
 	<h3>Put in the code</h3>
 	<form method="POST" action="/">
+		<c:out value="${error}"/>
 		<input type="password" name="code">
 		<button>Submit</button>
 	</form>

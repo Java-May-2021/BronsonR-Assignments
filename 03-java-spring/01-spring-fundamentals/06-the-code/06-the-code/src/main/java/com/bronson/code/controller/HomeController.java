@@ -11,16 +11,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class HomeController {
 	@GetMapping("/")
 	public String mainPage(HttpSession session) {
-		session.setAttribute("error", false);
+		session.setAttribute("error","");
 		return "main.jsp";
 	}
+	
 	@PostMapping("/")
 	public String input( @RequestParam(value="code") String code , HttpSession session) {
 		if (code.equals("dojo")) {
 			return "redirect:/code";			
 		} else {
-			session.setAttribute("error", true);
-			return "redirect:/";
+		session.setAttribute("error", "This Was Not The Code");
+		return "main.jsp";
 		}
 	}
 	
