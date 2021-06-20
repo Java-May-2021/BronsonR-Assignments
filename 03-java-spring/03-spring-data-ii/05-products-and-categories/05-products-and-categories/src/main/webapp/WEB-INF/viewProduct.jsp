@@ -14,25 +14,25 @@
 	<hr>
 	<h4>Categories: </h4>
 	<ul>
-		<c:forEach items="${product.categories}" var="cat">
-			<li>${cat.name}</li>
+		<c:forEach items="${productCat}" var="cate">
+			<li>${cate.name}</li>
 		</c:forEach>
 	</ul>
 	<div class="form-group">
-		<form:form method="post" action="/product/{id}" modelAttribute="cate">
-			<form:label path="categories">Categories:</form:label>
-			<form:errors path="categories"/>
-			<form:select path="categories">
+		<form method="post" action="/product/${prod.id}">
+			<label>Categories:</label>
+			<select name="categories">
 				<c:forEach items="${allCats}" var="cat">
 					<c:choose>
-						<c:when test="${product.categories == category.products}">
-							<form:option value="${cat.id}"> ${cat.name} </form:option>
+						<c:when test="${!cat.products.contains(prod)}">
+							<option value="${cat.id}"> ${cat.name} </option>
 						</c:when>
 					</c:choose>
 				</c:forEach>
-			</form:select>
+			</select>
+			<hr>
 			<button class="btn btn-success">Add</button>
-		</form:form>
+		</form>
 	</div>
 </body>
 </html>

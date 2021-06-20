@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bronson.pnc.models.Category;
 import com.bronson.pnc.models.Product;
@@ -69,7 +70,11 @@ public class HomeController {
 	
 	//get map product by ID with category selector
 	@GetMapping("/product/{id}")
-	public String viewProduct(@ModelAttribute("cate") Product product, @PathVariable("id") Long id, Model viewModel) {
+	public String viewProduct(@PathVariable("id") Long id, Model viewModel) {
+		Product thisProd = this.pServ.getById(id);
+		List<Category> cats  = thisProd.getCategories();
+		//System.out.println(cats);
+		viewModel.addAttribute("productCat", cats);
 		viewModel.addAttribute("prod", this.pServ.getById(id));
 		viewModel.addAttribute("allCats", this.cServ.getAll());
 		return "viewProduct.jsp";
@@ -78,20 +83,21 @@ public class HomeController {
 	
 	//post map for adding category to a product
 	@PostMapping("/product/{id}")
-	public String changeProductCategory(@Valid @ModelAttribute("cate") Product product, BindingResult result,
-			@PathVariable("id") Long id, Model viewModel) {
-		
-		if(result.hasErrors()) {
-			viewModel.addAttribute("prod", this.pServ.getById(id));
-			viewModel.addAttribute("allCats", this.cServ.getAll());
-			return "viewProduct.jsp";
-		}
+	public String changeProductCategory(@RequestParam("categories") Long catId,@PathVariable("id") Long id, Model viewModel) {
+		Product prodForCat = this.pServ.getById(id);
+		//System.out.println(id);
+		Category cateAdded = this.cServ.getById(catId);
+		//System.out.println(catId);
+		this.pServ.prodCategory(prodForCat, cateAdded);
 		return "redirect:/product/{id}";
 	}
 	
 	//get map category by ID with product selector
 	@GetMapping("/category/{id}")
-	public String viewCategory(@ModelAttribute("prod") Category category, @PathVariable("id") Long id, Model viewModel) {
+	public String viewCategory(@PathVariable("id") Long id, Model viewModel) {
+		Category thisCat = this.cServ.getById(id);
+		List<Product> prod = thisCat.getProducts();
+		viewModel.addAttribute("catProd", prod);
 		viewModel.addAttribute("cate", this.cServ.getById(id));
 		viewModel.addAttribute("allProds", this.pServ.getAll());
 		return "viewCategory.jsp";
@@ -99,15 +105,10 @@ public class HomeController {
 	
 	//post map for adding product to category
 	@PostMapping("/category/{id}")
-	public String changeCategoryProduct(@Valid @ModelAttribute("prod") Category category, BindingResult result, 
-			@PathVariable("id") Long id, Model viewModel) {
-		
-		if(result.hasErrors()) {
-			viewModel.addAttribute("cate", this.cServ.getById(id));
-			viewModel.addAttribute("allProds", this.pServ.getAll());
-			Long cateId = category.getId();
-			return "redirect:/category/" + cateId;
-		}
+	public String changeCategoryProduct(@RequestParam("products") Long prodId, @PathVariable("id") Long id, Model viewModel) {
+		Category catForProd = this.cServ.getById(id);
+		Product prodAdded = this.pServ.getById(prodId);
+		this.cServ.catProduct(catForProd, prodAdded);
 		return "redirect:/category/{id}";
 	}
 }

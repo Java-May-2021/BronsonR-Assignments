@@ -2,17 +2,20 @@ package com.bronson.pnc.services;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bronson.pnc.models.Category;
+import com.bronson.pnc.models.Product;
 import com.bronson.pnc.repositories.CateRepository;
+import com.bronson.pnc.repositories.ProdRepository;
 
 @Service
 public class CateService {
-	private final CateRepository cRepo;
-	public CateService(CateRepository repo) {
-		this.cRepo = repo;
-	}
+	@Autowired
+	private CateRepository cRepo;
+	@Autowired
+	private ProdRepository pRepo;
 	
 	//get all
 	public List<Category> getAll(){
@@ -27,6 +30,12 @@ public class CateService {
 	//create category
 	public Category createCate(Category category) {
 		return this.cRepo.save(category);
+	}
+	
+	public void catProduct(Category category, Product product) {
+		List<Category> catNewProd = product.getCategories();
+		catNewProd.add(category);
+		this.pRepo.save(product);
 	}
 	
 
